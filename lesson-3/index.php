@@ -3,33 +3,29 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-use Slim\Views\Twig;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$container = new \DI\Container();
-
-AppFactory::setContainer($container);
+$loader = new FilesystemLoader('templates');
+$view = new Environment($loader);
 
 // Create app
 $app = AppFactory::create();
 
-// Get container
-$container = $app->getContainer();
-
-$container->set('view', function(\Psr\Container\ContainerInterface $container){
-    return Twig::create('templates');
+$app->get('/', function (Request $request, Response $response, $args) use ($view) {
+    $body = $view->render('index.twig');
+    $response->getBody()->write($body);
+    return $response;
 });
 
-
-$app->get('/', function (Request $request, Response $response, $args) {
-    return $this->get('view')->render($response, 'index.twig');
-});
-
-$app->get('/about', function (Request $request, Response $response, $args) {
-    return $this->get('view')->render($response, 'about.twig', [
+$app->get('/about', function (Request $request, Response $response, $args) use ($view) {
+    $body = $view->render('about.twig', [
         'name' => 'Max'
     ]);
+    $response->getBody()->write($body);
+    return $response;
 });
 
 $app->run();
