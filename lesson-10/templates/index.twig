@@ -1,0 +1,18 @@
+{% extends 'base.twig' %}
+
+{% block body %}
+<h3 class="mb-3 mt-3">Latest Posts</h3>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      {% include 'section/posts.twig' with posts %}
+      <div class="row">
+        <a href="{{ url('blog') }}">View all</a>
+      </div>
+    </div>
+    <div class="col-md-3">
+      {% include 'section/about.twig' %}
+    </div>
+  </div>
+</div>
+{% endblock %}
